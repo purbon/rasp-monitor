@@ -31,7 +31,7 @@ while True:
     aio.send_data(room10feed.key, pmt10)
 
     humidity, temperature = Adafruit_DHT.read_retry(11, 4)
-    print("h", humidity, "t", temperature)
+    #print("h", humidity, "t", temperature)
     aio.send_data(roomTempFeed.key, temperature)
     aio.send_data(roomHumFeed.key, humidity)
 
