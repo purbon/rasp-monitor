@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import serial, time
 from Adafruit_IO import Client
 
