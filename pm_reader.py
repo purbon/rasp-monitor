@@ -25,7 +25,7 @@ def save(file, pmt25, pmt10, temp, humidity):
     print("saving data in file")
 
 def echo(pmt25, pmt10, temp, humidity):
-    print(f'{pmt25:.2f}, {pmt10:.2f}, {temp:.2f}, {humidity:.2f}')
+    print("%2d, %2d, %2d, %2d" % (pmt25, pmt10, temp, humidity))
 
 if __name__ == "__main__":
     aio = None
