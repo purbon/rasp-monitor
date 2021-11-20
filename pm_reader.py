@@ -46,8 +46,8 @@ if __name__ == "__main__":
         pmt25 = int.from_bytes(b''.join(data[2:4]), byteorder='little') / 10
         pmt10 = int.from_bytes(b''.join(data[4:6]), byteorder='little') / 10
 
-        humidity = None
-        temperature = None
+        humidity = -1
+        temperature = -1
 
         if mode == "all":
             humidity, temperature = Adafruit_DHT.read_retry(11, 4)
