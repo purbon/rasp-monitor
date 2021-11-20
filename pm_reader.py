@@ -7,7 +7,6 @@ from Adafruit_IO import Client, Feed
 import Adafruit_DHT
 
 ser = serial.Serial('/dev/ttyUSB0')
-aio = Client(os.environ['ADAFRUIT_IO_USERNAME'], os.environ['ADAFRUIT_IO_KEY'])
 
 def send(aio, pmt25, pmt10, temp, humidity):
     print("sending data")
@@ -29,10 +28,12 @@ def echo(pmt25, pmt10, temp, humidity):
     print(f'{pmt25:.2f}, {pmt10:.2f}, {temp:.2f}, {humidity:.2f}')
 
 if __name__ == "__main__":
+    aio = None
     if len(sys.argv) > 2:
         mode = sys.argv[1] # First param, would be modus in lower case
         store = sys.argv[2] # Store mode (send, for ada IO, store for file)
     else:
+        aio = Client(os.environ['ADAFRUIT_IO_USERNAME'], os.environ['ADAFRUIT_IO_KEY'])
         mode = "all"
 
     while True:
