@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import sys
 import serial
 import time
 import os
@@ -51,6 +52,6 @@ if __name__ == "__main__":
         if mode == "all":
             humidity, temperature = Adafruit_DHT.read_retry(11, 4)
 
-        echo(pmt25, pmt10, temp, humidity)
+        echo(pmt25, pmt10, temperature, humidity)
 
         time.sleep(60)
