@@ -3,6 +3,7 @@
 import sys
 import serial
 import time
+from datetime import datetime
 import os
 from Adafruit_IO import Client, Feed
 import Adafruit_DHT
@@ -25,8 +26,8 @@ def send(aio, pmt25, pmt10, temp, humidity):
 def save(file, pmt25, pmt10, temp, humidity):
     print("saving data in file")
 
-def echo(pmt25, pmt10, temp, humidity):
-    print("%2d, %2d, %2d, %2d" % (pmt25, pmt10, temp, humidity))
+def echo(dt, pmt25, pmt10, temp, humidity):
+    print("%2d, %2d, %2d, %2d, %2d" % (dt.microsecond, pmt25, pmt10, temp, humidity))
 
 if __name__ == "__main__":
     aio = None
@@ -36,6 +37,8 @@ if __name__ == "__main__":
     else:
         aio = Client(os.environ['ADAFRUIT_IO_USERNAME'], os.environ['ADAFRUIT_IO_KEY'])
         mode = "all"
+
+    print("Time, pmt25, pmt10, temparature, humidity")
 
     while True:
         data = []
@@ -52,6 +55,7 @@ if __name__ == "__main__":
         if mode == "all":
             humidity, temperature = Adafruit_DHT.read_retry(11, 4)
 
-        echo(pmt25, pmt10, temperature, humidity)
+        dt = datetime.now()
+        echo(dt, pmt25, pmt10, temperature, humidity)
 
         time.sleep(60)
