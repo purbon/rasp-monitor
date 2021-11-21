@@ -51,8 +51,8 @@ class FileStore:
         self.file.close()
 
 
-def close(store):
-    store.close()
+def close(metrics_store):
+    metrics_store.close()
 
 
 if __name__ == "__main__":
@@ -69,7 +69,7 @@ if __name__ == "__main__":
     else:
         store = FileStore()
 
-    atexit.register(close(), store)
+    atexit.register(close(), metrics_store=store)
     store.header()
 
     while True:
