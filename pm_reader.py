@@ -41,7 +41,7 @@ class FileStore:
         self.file = open("pm.log", "a+")
 
     def save(self, dt, pmt25, pmt10, temp, humidity):
-        line = "{}, {:2d}, {:2d}, {:2d}, {:2d}\n".format(dt.timestamp(), pmt25, pmt10, temp, humidity)
+        line = "{}, {:2f}, {:2f}, {:2f}, {:2f}\n".format(dt.timestamp(), pmt25, pmt10, temp, humidity)
         self.file.write(line)
 
     def header(self):
@@ -69,7 +69,7 @@ if __name__ == "__main__":
     else:
         store = FileStore()
 
-    atexit.register(close(), metrics_store=store)
+    atexit.register(close, metrics_store=store)
     store.header()
 
     while True:
