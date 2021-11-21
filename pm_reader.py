@@ -27,7 +27,7 @@ class AdaFruitStore:
     def close(self):
         pass
 
-    def save(self, dt, pmt25, pmt10, temperature, humidity):
+    def save(self, pmt25, pmt10, temperature, humidity):
         print("sending data")
         self.aio.send_data(self.room25feed.key, pmt25)
         self.aio.send_data(self.room10feed.key, pmt10)
@@ -40,8 +40,8 @@ class FileStore:
     def __init__(self):
         self.file = open("pm.log", "a+")
 
-    def save(self, dt, pmt25, pmt10, temp, humidity):
-        line = "{}, {:2f}, {:2f}, {:2f}, {:2f}\n".format(dt.timestamp(), pmt25, pmt10, temp, humidity)
+    def save(self, pmt25, pmt10, temp, humidity):
+        line = "{}, {:2f}, {:2f}, {:2f}, {:2f}\n".format(time.time(), pmt25, pmt10, temp, humidity)
         self.file.write(line)
         self.file.flush()
 
@@ -88,7 +88,6 @@ if __name__ == "__main__":
         if mode == "all":
             humidity, temperature = Adafruit_DHT.read_retry(11, 4)
 
-        dt = datetime.now()
-        store.save(dt, pmt25, pmt10, temperature, humidity)
+        store.save(pmt25, pmt10, temperature, humidity)
 
         time.sleep(60)
