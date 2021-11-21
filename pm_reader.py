@@ -7,6 +7,7 @@ from datetime import datetime
 import os
 from Adafruit_IO import Client, Feed
 import Adafruit_DHT
+import atexit
 
 ser = serial.Serial('/dev/ttyUSB0')
 
@@ -23,6 +24,9 @@ class AdaFruitStore:
     def header(self):
         pass
 
+    def close(self):
+        pass
+
     def save(self, dt, pmt25, pmt10, temperature, humidity):
         print("sending data")
         self.aio.send_data(self.room25feed.key, pmt25)
@@ -34,13 +38,21 @@ class AdaFruitStore:
 class FileStore:
 
     def __init__(self):
-        self.file = "pm.log"
+        self.file = open("pm.log", "a+")
 
     def save(self, dt, pmt25, pmt10, temp, humidity):
-        print("%s, %2d, %2d, %2d, %2d" % (dt.timestamp(), pmt25, pmt10, temp, humidity))
+        line = "{}, {:2d}, {:2d}, {:2d}, {:2d}\n".format(dt.timestamp(), pmt25, pmt10, temp, humidity)
+        self.file.write(line)
 
     def header(self):
-        print("Time, pmt25, pmt10, temparature, humidity")
+        self.file.write("time, pmt25, pmt10, temparature, humidity\n")
+
+    def close(self):
+        self.file.close()
+
+
+def close(store):
+    store.close()
 
 
 if __name__ == "__main__":
@@ -57,6 +69,7 @@ if __name__ == "__main__":
     else:
         store = FileStore()
 
+    atexit.register(close(), store)
     store.header()
 
     while True:
