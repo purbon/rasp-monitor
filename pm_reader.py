@@ -43,6 +43,7 @@ class FileStore:
     def save(self, dt, pmt25, pmt10, temp, humidity):
         line = "{}, {:2f}, {:2f}, {:2f}, {:2f}\n".format(dt.timestamp(), pmt25, pmt10, temp, humidity)
         self.file.write(line)
+        self.file.flush()
 
     def header(self):
         self.file.write("time, pmt25, pmt10, temparature, humidity\n")
