@@ -10,35 +10,54 @@ import Adafruit_DHT
 
 ser = serial.Serial('/dev/ttyUSB0')
 
-def send(aio, pmt25, pmt10, temp, humidity):
-    print("sending data")
 
-    room25feed = aio.feeds('roompmtwofive')
-    room10feed = aio.feeds('roompmtwoten')
-    roomTempFeed = aio.feeds('roomtemp')
-    roomHumFeed = aio.feeds('roomhumidity')
+class AdaFruitStore:
 
-    aio.send_data(room25feed.key, pmt25)
-    aio.send_data(room10feed.key, pmt10)
-    aio.send_data(roomTempFeed.key, temperature)
-    aio.send_data(roomHumFeed.key, humidity)
+    def __init__(self):
+        self.aio = Client(os.environ['ADAFRUIT_IO_USERNAME'], os.environ['ADAFRUIT_IO_KEY'])
+        self.room25feed = self.aio.feeds('roompmtwofive')
+        self.room10feed = self.aio.feeds('roompmtwoten')
+        self.roomTempFeed = self.aio.feeds('roomtemp')
+        self.roomHumFeed = self.aio.feeds('roomhumidity')
 
-def save(file, pmt25, pmt10, temp, humidity):
-    print("saving data in file")
+    def header(self):
+        pass
 
-def echo(dt, pmt25, pmt10, temp, humidity):
-    print("%2d, %2d, %2d, %2d, %2d" % (dt.microsecond, pmt25, pmt10, temp, humidity))
+    def save(self, dt, pmt25, pmt10, temperature, humidity):
+        print("sending data")
+        self.aio.send_data(self.room25feed.key, pmt25)
+        self.aio.send_data(self.room10feed.key, pmt10)
+        self.aio.send_data(self.roomTempFeed.key, temperature)
+        self.aio.send_data(self.roomHumFeed.key, humidity)
+
+
+class FileStore:
+
+    def __init__(self):
+        self.file = "pm.log"
+
+    def save(self, dt, pmt25, pmt10, temp, humidity):
+        print("%s, %2d, %2d, %2d, %2d" % (dt.timestamp(), pmt25, pmt10, temp, humidity))
+
+    def header(self):
+        print("Time, pmt25, pmt10, temparature, humidity")
+
 
 if __name__ == "__main__":
-    aio = None
-    if len(sys.argv) > 2:
-        mode = sys.argv[1] # First param, would be modus in lower case
-        store = sys.argv[2] # Store mode (send, for ada IO, store for file)
-    else:
-        aio = Client(os.environ['ADAFRUIT_IO_USERNAME'], os.environ['ADAFRUIT_IO_KEY'])
-        mode = "all"
 
-    print("Time, pmt25, pmt10, temparature, humidity")
+    if len(sys.argv) > 2:
+        mode = sys.argv[1]  # First param, would be modus in lower case
+        store = sys.argv[2]  # Store mode (send, for ada IO, store for file)
+    else:
+        mode = "all"
+        store = "file"
+
+    if store == "ada":
+        store = AdaFruitStore()
+    else:
+        store = FileStore()
+
+    store.header()
 
     while True:
         data = []
@@ -56,6 +75,6 @@ if __name__ == "__main__":
             humidity, temperature = Adafruit_DHT.read_retry(11, 4)
 
         dt = datetime.now()
-        echo(dt, pmt25, pmt10, temperature, humidity)
+        store.save(dt, pmt25, pmt10, temperature, humidity)
 
         time.sleep(60)
