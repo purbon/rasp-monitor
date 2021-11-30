@@ -6,7 +6,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 import Adafruit_BMP.BMP085 as BMP085
 
-sensor = BMP085.BMP085()
+sensor = BMP085.BMP085(busnum=2)
 
 # Optionally you can override the bus number:
 #sensor = BMP085.BMP085(busnum=2)
